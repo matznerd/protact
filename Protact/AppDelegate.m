@@ -24,7 +24,7 @@
     [self initLocationManager];
     [self addressBookRequestAccess];
     
-    [Analytics debug:YES];
+    //[Analytics debug:YES];
     [Analytics initializeWithSecret:kSegmentWriteKey];
     [Appsee start:kAppSeeAppKey];
     
@@ -49,7 +49,7 @@
 }
 
 - (void) prePopulateStatuses {
-    NSArray *statuses = [NSArray arrayWithObjects:@"New", @"Hooked Up", @"Courting", @"First Date", @"Dating", @"First Kiss", nil];
+    NSArray *statuses = [NSArray arrayWithObjects:@"New", @"Follow Up", @"In Pursuit", @"Pending", @"Closed", nil];
     if (![self appHasOpenedBefore]) {
         NSLog(@"prePopulateStatuses");
         [[NSUserDefaults standardUserDefaults] setObject:statuses forKey:kStatuses];

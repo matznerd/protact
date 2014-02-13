@@ -48,6 +48,8 @@
 		540FAECA18A34EB00066395B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540FAEC918A34EAF0066395B /* AVFoundation.framework */; };
 		540FAECC18A34EC30066395B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540FAECB18A34EC30066395B /* CoreMedia.framework */; };
 		540FAECE18A34ED40066395B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 540FAECD18A34ED40066395B /* CoreVideo.framework */; };
+		540FAED118A49B740066395B /* ContactAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 540FAED018A49B740066395B /* ContactAnnotation.m */; };
+		540FAED518A4A51F0066395B /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 540FAED418A4A51F0066395B /* SettingsTableViewController.m */; };
 		546C23961831F4A900514693 /* StatusTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 546C23951831F4A900514693 /* StatusTableViewController.m */; };
 		546C239D18329F6000514693 /* StatusSettingTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 546C239C18329F6000514693 /* StatusSettingTableViewController.m */; };
 		54B9A3501832E0DE0049AB8C /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 54B9A34F1832E0DE0049AB8C /* Contact.m */; };
@@ -132,6 +134,10 @@
 		540FAEC918A34EAF0066395B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		540FAECB18A34EC30066395B /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		540FAECD18A34ED40066395B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		540FAECF18A49B740066395B /* ContactAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactAnnotation.h; sourceTree = "<group>"; };
+		540FAED018A49B740066395B /* ContactAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactAnnotation.m; sourceTree = "<group>"; };
+		540FAED318A4A51F0066395B /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
+		540FAED418A4A51F0066395B /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
 		546C23941831F4A900514693 /* StatusTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusTableViewController.h; sourceTree = "<group>"; };
 		546C23951831F4A900514693 /* StatusTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusTableViewController.m; sourceTree = "<group>"; };
 		546C239B18329F6000514693 /* StatusSettingTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusSettingTableViewController.h; sourceTree = "<group>"; };
@@ -272,6 +278,7 @@
 				54F7C4B1187B867A005235B4 /* MessageDetails */,
 				546C23931831F36600514693 /* Status */,
 				546C239A18329F3C00514693 /* Status Settings */,
+				540FAED218A4A4FB0066395B /* Settings */,
 				54E21B8B187CE9B200471D66 /* Foursquare */,
 				540FAEAB18A2F76D0066395B /* JPSThumbnailAnnotation */,
 				54E21B8F187CEC4E00471D66 /* AFNetworking */,
@@ -364,6 +371,8 @@
 			children = (
 				54056EC8182D8FCC004F7E87 /* ContactsTableViewController.h */,
 				54056EC9182D8FCC004F7E87 /* ContactsTableViewController.m */,
+				540FAECF18A49B740066395B /* ContactAnnotation.h */,
+				540FAED018A49B740066395B /* ContactAnnotation.m */,
 			);
 			name = ContactsTableView;
 			sourceTree = "<group>";
@@ -399,6 +408,15 @@
 				540FAEB018A2F76D0066395B /* JPSThumbnailAnnotationView.m */,
 			);
 			path = JPSThumbnailAnnotation;
+			sourceTree = "<group>";
+		};
+		540FAED218A4A4FB0066395B /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				540FAED318A4A51F0066395B /* SettingsTableViewController.h */,
+				540FAED418A4A51F0066395B /* SettingsTableViewController.m */,
+			);
+			name = Settings;
 			sourceTree = "<group>";
 		};
 		546C23931831F36600514693 /* Status */ = {
@@ -575,11 +593,13 @@
 				54056E76182C75D1004F7E87 /* AppDelegate.m in Sources */,
 				540FAEB418A2F76D0066395B /* JPSThumnail.m in Sources */,
 				54E21BAA187CEC5D00471D66 /* AFXMLRequestOperation.m in Sources */,
+				540FAED118A49B740066395B /* ContactAnnotation.m in Sources */,
 				546C23961831F4A900514693 /* StatusTableViewController.m in Sources */,
 				54E21BA7187CEC5D00471D66 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				54056E72182C75D1004F7E87 /* main.m in Sources */,
 				54B9A3501832E0DE0049AB8C /* Contact.m in Sources */,
 				54E21BA8187CEC5D00471D66 /* AFPropertyListRequestOperation.m in Sources */,
+				540FAED518A4A51F0066395B /* SettingsTableViewController.m in Sources */,
 				54056ECF182D9572004F7E87 /* ContactDetailsTableViewController.m in Sources */,
 				54E21BAB187CEC5D00471D66 /* UIImageView+AFNetworking.m in Sources */,
 				546C239D18329F6000514693 /* StatusSettingTableViewController.m in Sources */,
@@ -752,6 +772,7 @@
 				INFOPLIST_FILE = "Protact/Protact-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "428B778E-1B26-475E-9244-5CD2E9CB8428";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

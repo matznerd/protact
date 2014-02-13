@@ -27,6 +27,7 @@ static NSString *kDefaultMessagetIsOn = @"DefaultMessageIsOn";
 
 static NSString *kStatuses = @"Statuses";
 static NSString *kFirstOpen = @"FirstOpen";
+static NSString *kKeyboardViewAddedContact = @"keyboardAddedContact";
 
 // AppSee
 static NSString *kAppSeeAppKey = @"49fae3e0e97e40e39e3eb73e4b652927";

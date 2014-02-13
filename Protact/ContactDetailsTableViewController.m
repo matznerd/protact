@@ -76,6 +76,10 @@
     self.textFieldNumber.inputAccessoryView = self.keyboardToolBar;
     self.notesTextView.inputAccessoryView = self.keyboardToolBar;
     
+    self.buttonText.backgroundColor = [Util colorWithHexString:@"4cda64"];
+    self.buttonText.layer.cornerRadius = 2.0f;
+    self.buttonCall.layer.cornerRadius = 2.0f;
+    
     if (self.contact != nil) {
         [self populateFieldsWithContactInfo];
         self.buttonImport.hidden = YES;

@@ -32,8 +32,9 @@ typedef enum directionTypes {
 @property (nonatomic, strong) AppDelegate *appDelegate;
 @property (nonatomic, strong) IBOutlet UIPickerView *pickerView;
 @property (nonatomic, weak) IBOutlet UISwitch *defaultSwitch;
-@property (nonatomic, strong) NSString *defaultMessage;
+@property (nonatomic, strong) Template *defaultTemplate;
 @property (nonatomic, weak) IBOutlet UITableView *templatesTableView;
+@property (nonatomic, weak) IBOutlet UIButton *buttonChooseTemplate;
 
 @property (nonatomic, strong) NSFetchRequest *searchFetchRequest;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
@@ -50,7 +51,7 @@ typedef enum directionTypes {
 @end
 
 @implementation KeyboardViewController
-@synthesize appDelegate, phoneNumberField, contact, keyboardView, pickerView, defaultSwitch, defaultMessage;
+@synthesize appDelegate, phoneNumberField, contact, keyboardView, pickerView, defaultSwitch, defaultTemplate, buttonChooseTemplate;
 @synthesize addContactView, nameTextField, messageTextView, templatesTableView;
 @synthesize searchFetchRequest = _searchFetchRequest;
 @synthesize fetchedResultsController = _fetchedResultsController;
@@ -74,6 +75,9 @@ typedef enum directionTypes {
     self.messageTextView.layer.borderWidth = 1.0f;
     self.nameTextField.layer.borderColor = [UIColor greenColor].CGColor;
     self.messageTextView.layer.borderColor = [UIColor greenColor].CGColor;
+    
+    self.buttonChooseTemplate.backgroundColor = [Util colorWithHexString:@"4cda64"];
+    self.buttonChooseTemplate.layer.cornerRadius = 2.0f;
     
     UIGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped)];
     [self.phoneNumberField addGestureRecognizer:tapGesture];
@@ -147,17 +151,20 @@ typedef enum directionTypes {
     NSArray *templates = [_fetchedResultsController fetchedObjects];
     for (Template *template in templates) {
         if ([template.isDefault boolValue])
-            self.defaultMessage = template.message;
+            self.defaultTemplate = template;
         
     }
     
     if (self.defaultSwitch.isOn) {
-        if (self.defaultMessage != nil)
-            self.messageTextView.text = self.defaultMessage;
-        else
+        if (self.defaultTemplate != nil) {
+            self.messageTextView.text = self.defaultTemplate.message;
+            [self.buttonChooseTemplate setTitle:self.defaultTemplate.title forState:UIControlStateNormal];
+        } else
             [self.defaultSwitch setOn:NO];
-    } else
+    } else {
         self.messageTextView.text = nil;
+        [self.buttonChooseTemplate setTitle:@"Choose Template" forState:UIControlStateNormal];
+    }
 }
 
 - (IBAction) saveAndSendPressed:(id)sender {
@@ -171,6 +178,7 @@ typedef enum directionTypes {
                 self.messageTextView.text = nil;
                 [self.nameTextField resignFirstResponder];
                 [self.messageTextView resignFirstResponder];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kKeyboardViewAddedContact object:nil];
             } else {
                 [self displayFailedMessage];
             }
@@ -195,6 +203,7 @@ typedef enum directionTypes {
                 self.messageTextView.text = nil;
                 [self.nameTextField resignFirstResponder];
                 [self.messageTextView resignFirstResponder];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kKeyboardViewAddedContact object:nil];
             } else {
                 [self displayFailedMessage];
             }
@@ -327,9 +336,10 @@ typedef enum directionTypes {
 - (IBAction) defaultSwitchChanged:(id)sender {
     if (self.defaultSwitch.isOn) {
         if ([[self.fetchedResultsController fetchedObjects] count]) {
-            if (self.defaultMessage != nil) {
+            if (self.defaultTemplate != nil) {
                 [[Analytics sharedAnalytics] track:kEventKeyboardToggleDefaultTemplateOn];
-                self.messageTextView.text = self.defaultMessage;
+                self.messageTextView.text = self.defaultTemplate.message;
+                [self.buttonChooseTemplate setTitle:self.defaultTemplate.title forState:UIControlStateNormal];
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kDefaultMessagetIsOn];
             } else {
                 [self displayNoDefaultTemplateMessage];
@@ -342,6 +352,7 @@ typedef enum directionTypes {
     } else {
         [[Analytics sharedAnalytics] track:kEventKeyboardToggleDefaultTemplateOff];
         self.messageTextView.text = nil;
+        [self.buttonChooseTemplate setTitle:@"Choose Template" forState:UIControlStateNormal];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kDefaultMessagetIsOn];
     }
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -361,11 +372,9 @@ typedef enum directionTypes {
 }
 
 - (void) configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath forTableView:(UITableView*)tableView {
-    
     // Configure the cell ...
     Template *template = [_fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = template.title;
-    
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -382,6 +391,7 @@ typedef enum directionTypes {
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Template *template = [_fetchedResultsController objectAtIndexPath:indexPath];
     self.messageTextView.text = template.message;
+    [self.buttonChooseTemplate setTitle:template.title forState:UIControlStateNormal];
     [self hideView:self.templatesTableView direction:DIRECTIONLEFT];
     [self showView:self.addContactView];
 }

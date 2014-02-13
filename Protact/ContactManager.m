@@ -97,7 +97,6 @@
         success = YES;
         
     } else {
-        
         NSLog(@"Error: %@", [error localizedDescription]);
         success = NO;
         
@@ -107,7 +106,6 @@
 }
 
 - (BOOL) saveToAddressBook {
-    
     if (self.contact.abRecId != nil) {
         NSLog(@"ABRecordID: %d", [self.contact.abRecId intValue]);
         return [self updateABRecordWithId:(ABRecordID)[self.contact.abRecId intValue]];

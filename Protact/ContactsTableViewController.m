@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "Constants.h"
 #import "JPSThumbnailAnnotation.h"
+#import "ContactAnnotation.h"
 
 @interface ContactsTableViewController () <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UISearchDisplayDelegate, MKMapViewDelegate>
 
@@ -45,7 +46,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardViewAddedContact) name:kKeyboardViewAddedContact object:nil];
     self.appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     [self.view addSubview:self.mapView];
     [self.searchDisplayController.searchResultsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
@@ -54,6 +55,11 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [[Analytics sharedAnalytics] screen:kViewProtacts];
+}
+
+- (void) keyboardViewAddedContact {
+    NSLog(@"Keyboard View Added Contact");
+    [self.mapView addAnnotations:[self generateAnnotations]];
 }
 
 - (void) loadContacts {
@@ -71,12 +77,52 @@
         self.mapView.hidden = NO;
         [self.tableView bringSubviewToFront:self.mapView];
         [self.mapView addAnnotations:[self generateAnnotations]];
-        //[self zoomInMapView];
+        [self zoomInMapView];
     } else {
         self.mapView.hidden = YES;
+        [self.tableView reloadData];
     }
 }
 
+
+- (NSArray*) generateAnnotations {
+    NSMutableArray *annotations = [[NSMutableArray alloc] init];
+    NSArray *fetchedContacts = [self.fetchedResultsController fetchedObjects];
+    for (Contact *contact in fetchedContacts) {
+        ContactAnnotation *contactAnn = [[ContactAnnotation alloc] initWithContact:contact];
+        [annotations addObject:contactAnn];
+        NSLog(@"Add Anno: %@", contact.name);
+    }
+    return annotations;
+}
+
+#pragma mark - MKMapViewDelegate - Simple
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+        NSString *reuseIdentifier = @"ContactAnnotationView";
+        MKPinAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:reuseIdentifier];
+        if(!annotationView) {
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
+            annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        }
+        
+        annotationView.enabled = YES;
+        annotationView.canShowCallout = YES;
+    
+        if ([annotation isKindOfClass:[ContactAnnotation class]]) {
+            annotationView.pinColor = MKPinAnnotationColorGreen;
+        }
+    
+        return annotationView;
+    
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+    NSLog(@"MapView Callout Tapped");
+    ContactAnnotation *contactAnn = (ContactAnnotation*)view.annotation;
+    [self pushToContactDetails:contactAnn.contact];
+}
+
+/*
 - (NSArray *)generateAnnotations {
     NSMutableArray *annotations = [[NSMutableArray alloc] init];
     NSArray *fetchedContacts = [self.fetchedResultsController fetchedObjects];
@@ -94,8 +140,7 @@
     return annotations;
 }
 
-#pragma mark - MKMapViewDelegate
-
+#pragma mark - MKMapViewDelegate - JPSThumbnail
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     if ([view conformsToProtocol:@protocol(JPSThumbnailAnnotationViewProtocol)]) {
         [((NSObject<JPSThumbnailAnnotationViewProtocol> *)view) didSelectAnnotationViewInMap:mapView];
@@ -114,6 +159,7 @@
     }
     return nil;
 }
+*/
 
 - (void) zoomInMapView {
     MKCoordinateRegion region;
@@ -276,8 +322,6 @@
         
         cell.detailTextLabel.text = nil;
     }
-    
-    
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -316,16 +360,13 @@
 
 - (NSFetchedResultsController *)fetchedResultsController {
     
-    
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
     
-     
     NSFetchedResultsController *theFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.searchFetchRequest
                                                                                                   managedObjectContext:self.appDelegate.managedObjectContext sectionNameKeyPath:nil
                                                                                                              cacheName:nil];
-    
     /*
     if (self.sortBySegmentControl.selectedSegmentIndex == 0) {
         
@@ -342,7 +383,6 @@
                                                        cacheName:nil];
     }
     */
-    
     
     self.fetchedResultsController = theFetchedResultsController;
     _fetchedResultsController.delegate = self;
@@ -398,6 +438,8 @@
             
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.mapView addAnnotations:[self generateAnnotations]];
+            NSLog(@"Add Contact");
             break;
             
         case NSFetchedResultsChangeDelete:
